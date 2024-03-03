@@ -1,0 +1,18 @@
+---
+- name: Restart Service If Down
+  hosts: your_servers
+  become: yes
+  vars:
+    service_name: your_service_name
+
+  tasks:
+    - name: Check if the service is active
+      command: systemctl is-active --quiet {{ service_name }}
+      ignore_errors: true
+      register: service_status
+
+    - name: Restart service if it is down
+      systemd:
+        name: "{{ service_name }}"
+        state: restarted
+      when: service_status.rc != 0

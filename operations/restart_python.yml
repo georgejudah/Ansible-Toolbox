@@ -1,0 +1,20 @@
+---
+- name: Check and Restart Python App
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  vars:
+    python_app_name: your_python_app_name
+    python_app_command: /path/to/your/python/app/start.sh # Replace with your actual start command
+
+  tasks:
+    - name: Check if the Python app process is running
+      shell: ps aux | grep "{{ python_app_name }}" | grep -v grep
+      register: python_app_status
+      ignore_errors: true
+
+    - name: Restart Python app if it is not running
+      command: "{{ python_app_command }}"
+      args:
+        chdir: /path/to/your/python/app
+      when: python_app_status.rc != 0

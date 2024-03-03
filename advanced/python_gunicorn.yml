@@ -1,0 +1,37 @@
+---
+- name: Deploy and Enable Gunicorn App
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  vars:
+    app_name: your_gunicorn_app
+    app_path: /path/to/your/app
+    virtualenv_path: /path/to/your/virtualenv
+    gunicorn_service_file: /etc/systemd/system/{{ app_name }}.service
+
+  tasks:
+    - name: Deploy Gunicorn app files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: your_user
+        group: your_group
+      with_items:
+        - { src: your_app_files/*, dest: "{{ app_path }}/" }
+        - { src: gunicorn.service.j2, dest: "{{ gunicorn_service_file }}" }
+
+    - name: Enable and start Gunicorn service
+      systemd:
+        name: "{{ app_name }}"
+        enabled: yes
+        state: started
+
+    - name: Check Gunicorn service status
+      systemd:
+        name: "{{ app_name }}"
+        state: status
+      register: gunicorn_status
+
+    - name: Display Gunicorn service status
+      debug:
+        var: gunicorn_status

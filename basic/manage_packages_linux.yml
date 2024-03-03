@@ -1,0 +1,32 @@
+---
+- name: Manage Packages on Linux Systems
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  tasks:
+    - name: Install packages using apt (Debian/Ubuntu)
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - package1
+        - package2
+      when: ansible_os_family == 'Debian'
+
+    - name: Install packages using yum (Red Hat/CentOS)
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - package3
+        - package4
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install packages using dnf (Fedora)
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - package5
+        - package6
+      when: ansible_os_family == 'Fedora'

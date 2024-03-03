@@ -1,0 +1,5 @@
+tasks:
+  - name: Copy file to remote host
+    copy:
+      src: /home/ubuntu/local/file.txt
+      dest: /home/ubuntu/remote/file.txt

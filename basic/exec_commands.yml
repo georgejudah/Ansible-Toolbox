@@ -1,0 +1,8 @@
+---
+- name: Execute Command on Target Systems
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  tasks:
+    - name: Run a simple command
+      command: echo "Hello, Ansible!"

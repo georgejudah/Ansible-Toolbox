@@ -1,0 +1,42 @@
+---
+- name: Deploy Python App with venv
+  hosts: web_servers
+  become: yes
+  vars:
+    app_name: my_flask_app
+    app_repo: https://github.com/yourusername/your-flask-app.git
+    app_path: /opt/{{ app_name }}
+    venv_path: "{{ app_path }}/venv"
+
+  tasks:
+    - name: Update apt cache (for Debian-based systems)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Clone or update the Git repository
+      git:
+        repo: "{{ app_repo }}"
+        dest: "{{ app_path }}"
+        version: main # Specify the branch or tag you want to deploy
+
+    - name: Create a Python virtual environment
+      command: python3 -m venv "{{ venv_path }}"
+      args:
+        creates: "{{ venv_path }}/bin/activate"
+
+    - name: Install Python dependencies within the virtual environment
+      pip:
+        requirements: "{{ app_path }}/requirements.txt"
+        virtualenv: "{{ venv_path }}"
+
+    - name: Configure the application (if needed)
+      template:
+        src: config.ini.j2
+        dest: "{{ app_path }}/config.ini"
+
+    - name: Start the application service
+      systemd:
+        name: "{{ app_name }}"
+        enabled: yes
+        state: started

@@ -1,0 +1,12 @@
+---
+- name: Update Auto Scaling Group
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Set Desired Capacity
+      ec2_asg:
+        region: your_aws_region
+        name: your_asg_name
+        desired_capacity: your_new_desired_capacity
+        min_size: your_new_min_size
+        max_size: your_new_max_size

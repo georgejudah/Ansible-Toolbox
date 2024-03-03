@@ -1,0 +1,28 @@
+---
+- name: Install and Configure Filebeat
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Filebeat
+      apt:
+        name: filebeat
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Filebeat
+      yum:
+        name: filebeat
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Copy Filebeat Configuration
+      template:
+        src: filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+      notify: Restart Filebeat
+
+  handlers:
+    - name: Restart Filebeat
+      service:
+        name: filebeat
+        state: restarted

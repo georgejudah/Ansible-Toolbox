@@ -1,0 +1,11 @@
+Basic playbooks
+1. Copy files from control machine to remote host
+2. Python app deployment
+3. Restart a systemctl service by verifying if it is down
+4. Manage packages on Linux systems (apt, yum, dnf)
+5. Execute commands on target systems.
+
+Advanced playbooks
+1. Resiliency for Python App - Check for a python process and restart it after activating the virtual_env file
+2. Python Gunicorn Deployment - Git clone, create a virtual env in Python, install the required packages and start the gunicorn app with it's settings
+3. Filebeat setup - Install filebeat, copy config from current server to target system and start the filebeat service

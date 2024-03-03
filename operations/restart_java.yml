@@ -1,0 +1,20 @@
+---
+- name: Check and Restart Java App
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  vars:
+    java_app_name: your_java_app_name
+    java_app_command: /path/to/your/java/app/start.sh
+
+  tasks:
+    - name: Check if the Java app process is running
+      shell: ps aux | grep "{{ java_app_name }}" | grep -v grep
+      register: java_app_status
+      ignore_errors: true
+
+    - name: Restart Java app if it is not running
+      command: "{{ java_app_command }}"
+      args:
+        chdir: /path/to/your/java/app
+      when: java_app_status.rc != 0

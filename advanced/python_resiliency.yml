@@ -1,0 +1,25 @@
+---
+- name: Check and Restart Python Process
+  hosts: your_servers
+  become: yes # Run tasks with sudo
+
+  vars:
+    process_name: your_python_process
+    virtualenv_path: /path/to/your/virtualenv
+
+  tasks:
+    - name: Check if the Python process is running
+      shell: ps aux | grep "{{ process_name }}" | grep -v grep
+      register: process_check
+      ignore_errors: true
+
+    - name: Restart the Python process and activate virtual environment
+      shell: |
+        if [ -z "$(ps aux | grep '{{ process_name }}' | grep -v grep)" ]; then
+          source "{{ virtualenv_path }}/bin/activate"
+          cd /path/to/your/app
+          nohup python your_script.py > /dev/null 2>&1 &
+        fi
+      args:
+        executable: /bin/bash
+      when: process_check.rc != 0
